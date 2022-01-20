@@ -14,7 +14,6 @@ WORKDIR /src
 COPY ["Api-CSharp.csproj", "./"]
 RUN dotnet restore "Api-CSharp.csproj"
 COPY . .
-WORKDIR "/src/."
 RUN dotnet build "Api-CSharp.csproj" -c Release -o /app/build
 
 FROM build AS publish
