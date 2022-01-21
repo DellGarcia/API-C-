@@ -1,0 +1,17 @@
+services:
+  db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    container_name: mysql_container
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+    
+
+  api:
+    build: .
+    ports:
+      - "8080:5000"
+    restart: always
+    depends_on:
+      - db
