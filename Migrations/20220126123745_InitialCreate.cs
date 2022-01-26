@@ -15,12 +15,12 @@ namespace Api_CSharp.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    FirstName = table.Column<string>(type: "longtext", nullable: false)
+                    FirstName = table.Column<string>(type: "varchar(150)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    SurName = table.Column<string>(type: "longtext", nullable: true)
+                    SurName = table.Column<string>(type: "varchar(150)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Age = table.Column<int>(type: "int", nullable: false),
-                    CreationDate = table.Column<DateTime>(type: "datetime(6)", nullable: false, defaultValue: new DateTime(2022, 1, 22, 12, 40, 5, 142, DateTimeKind.Local).AddTicks(1683))
+                    CreationDate = table.Column<DateTime>(type: "datetime(6)", nullable: false, defaultValue: new DateTime(2022, 1, 26, 9, 37, 45, 497, DateTimeKind.Local).AddTicks(8136))
                 },
                 constraints: table =>
                 {
