@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Api_CSharp.Database;
 using Api_CSharp.Models;
 
@@ -15,17 +16,22 @@ namespace Api_CSharp.Controllers
     public class UserController : ControllerBase
     {
         private readonly ApplicationDBContext _context;
+        private readonly ILogger<UserController> _logger;
 
-        public UserController(ApplicationDBContext context)
+        public UserController(ILogger<UserController> logger, ApplicationDBContext context)
         {
             _context = context;
+            _logger = logger;
         }
 
         // GET: api/User
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUser()
         {
-            return await _context.User.ToListAsync();
+            _logger.LogInformation($"Controller action executed on: {DateTime.Now}");
+            var result = await _context.User.ToListAsync();
+            _logger.LogInformation($"We got {result.Count} users");
+            return result;
         }
 
         // GET: api/User/5
