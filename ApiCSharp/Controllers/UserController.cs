@@ -56,7 +56,11 @@ namespace Api_CSharp.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(Guid id, User user)
         {
+            user.Id = id;
             _logger.LogInformation($"Executando PUT em api/user/{id}");
+
+            if (!IsRequiredFieldsCorrectlyFilled(user))
+                return BadRequest();
 
             _context.Entry(user).State = EntityState.Modified;
             _context.Entry(user).Property(p => p.CreationDate).IsModified = false;
@@ -87,6 +91,9 @@ namespace Api_CSharp.Controllers
         public async Task<ActionResult<User>> PostUser(User user)
         {
             _logger.LogInformation($"Executando POST para api/user");
+
+            if(!IsRequiredFieldsCorrectlyFilled(user))
+                return BadRequest();
 
             user.CreationDate = null;
             _context.User.Add(user);
@@ -119,6 +126,11 @@ namespace Api_CSharp.Controllers
         private bool UserExists(Guid id)
         {
             return _context.User.Any(e => e.Id == id);
+        }
+
+        private bool IsRequiredFieldsCorrectlyFilled(User user)
+        {
+            return user.FirstName != null && user.Age > 12 && user.Age < 200;
         }
     }
 }
