@@ -28,9 +28,9 @@ namespace Api_CSharp.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUser()
         {
-            _logger.LogInformation($"Controller action executed on: {DateTime.Now}");
+            _logger.LogInformation($"Executando GET em api/user");
             var result = await _context.User.ToListAsync();
-            _logger.LogInformation($"We got {result.Count} users");
+            _logger.LogInformation($"Foram obtidos {result.Count} usuários");
             return result;
         }
 
@@ -38,13 +38,16 @@ namespace Api_CSharp.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(Guid id)
         {
+            _logger.LogInformation($"Executando GET em api/user/{id}");
             var user = await _context.User.FindAsync(id);
 
             if (user == null)
             {
+                _logger.LogWarning($"Não existe registro de um Usuário com Id={id}");
                 return NotFound();
             }
 
+            _logger.LogInformation($"Usuário Id={id} encontrado");
             return user;
         }
 
@@ -53,29 +56,28 @@ namespace Api_CSharp.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(Guid id, User user)
         {
-            if (id != user.Id)
-            {
-                return BadRequest();
-            }
+            _logger.LogInformation($"Executando PUT em api/user/{id}");
 
             _context.Entry(user).State = EntityState.Modified;
+            _context.Entry(user).Property(p => p.CreationDate).IsModified = false;
 
             try
             {
+                _logger.LogInformation($"Verificando dados para salvar");
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
                 if (!UserExists(id))
                 {
+                    _logger.LogWarning($"Não existe registro de um Usuário com Id={id}");
                     return NotFound();
                 }
                 else
-                {
                     throw;
-                }
             }
 
+            _logger.LogInformation($"Atualização efetuada com sucesso para o User com ID={id}");
             return NoContent();
         }
 
@@ -84,9 +86,13 @@ namespace Api_CSharp.Controllers
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {
+            _logger.LogInformation($"Executando POST para api/user");
+
+            user.CreationDate = null;
             _context.User.Add(user);
             await _context.SaveChangesAsync();
 
+            _logger.LogInformation($"");
             return CreatedAtAction("GetUser", new { id = user.Id }, user);
         }
 
@@ -94,15 +100,19 @@ namespace Api_CSharp.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(Guid id)
         {
+            _logger.LogInformation($"Executando DELETE para api/users/${id}");
             var user = await _context.User.FindAsync(id);
             if (user == null)
-            {
+            { 
+                _logger.LogWarning($"Não existe registro de um Usuário com Id={id}");
                 return NotFound();
             }
 
+            _logger.LogInformation("Iniciando tentativa de remoção");
             _context.User.Remove(user);
             await _context.SaveChangesAsync();
 
+            _logger.LogInformation($"O usuário de Id={id} foi removido com sucesso");
             return NoContent();
         }
 

@@ -10,7 +10,10 @@ namespace Api_CSharp.Database
     public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options) : base(options) 
     {}
 
-    public DbSet<Api_CSharp.Models.User> User { get; set; }
+
+    public ApplicationDBContext() { }
+
+    public virtual DbSet<Api_CSharp.Models.User> User { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

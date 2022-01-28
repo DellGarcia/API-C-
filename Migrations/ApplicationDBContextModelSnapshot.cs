@@ -30,7 +30,7 @@ namespace Api_CSharp.Migrations
                     b.Property<DateTime>("CreationDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)")
-                        .HasDefaultValue(new DateTime(2022, 1, 26, 9, 37, 45, 497, DateTimeKind.Local).AddTicks(8136));
+                        .HasDefaultValue(new DateTime(2022, 1, 28, 11, 3, 44, 709, DateTimeKind.Local).AddTicks(3036));
 
                     b.Property<string>("FirstName")
                         .IsRequired()
