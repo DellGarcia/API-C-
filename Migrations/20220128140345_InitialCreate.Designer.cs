@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Api_CSharp.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20220127161230_InitialCreate")]
+    [Migration("20220128140345_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -32,7 +32,7 @@ namespace Api_CSharp.Migrations
                     b.Property<DateTime>("CreationDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)")
-                        .HasDefaultValue(new DateTime(2022, 1, 27, 13, 12, 30, 120, DateTimeKind.Local).AddTicks(3701));
+                        .HasDefaultValue(new DateTime(2022, 1, 28, 11, 3, 44, 709, DateTimeKind.Local).AddTicks(3036));
 
                     b.Property<string>("FirstName")
                         .IsRequired()

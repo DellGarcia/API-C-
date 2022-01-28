@@ -1,47 +1,124 @@
-using api_csharp.Services;
-using api_csharp.Requests;
-using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Api_CSharp.Database;
+using Api_CSharp.Models;
 
-namespace api_csharp.Controllers
+namespace Api_CSharp.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class UserController : ControllerBase
     {
-        protected UserService service;
+        private readonly ApplicationDBContext _context;
+        private readonly ILogger<UserController> _logger;
 
-        public UserController(
-            UserService service)
+        public UserController(ILogger<UserController> logger, ApplicationDBContext context)
         {
-            this.service = service;
+            _context = context;
+            _logger = logger;
         }
 
-        [HttpDelete("{id}")]
-        public virtual async Task<IActionResult> DeleteById(Guid id)
+        // GET: api/User
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<User>>> GetUser()
         {
-            var response = await service.DeleteById(id);
-            return Ok(response);
+            _logger.LogInformation($"Executando GET em api/user");
+            var result = await _context.User.ToListAsync();
+            _logger.LogInformation($"Foram obtidos {result.Count} usuários");
+            return result;
         }
 
+        // GET: api/User/5
         [HttpGet("{id}")]
-        public virtual async Task<IActionResult> GetById(Guid id)
+        public async Task<ActionResult<User>> GetUser(Guid id)
         {
-            var response = await service.GetById(id);
-            return Ok(response);
+            _logger.LogInformation($"Executando GET em api/user/{id}");
+            var user = await _context.User.FindAsync(id);
+
+            if (user == null)
+            {
+                _logger.LogWarning($"Não existe registro de um Usuário com Id={id}");
+                return NotFound();
+            }
+
+            _logger.LogInformation($"Usuário Id={id} encontrado");
+            return user;
         }
 
+        // PUT: api/User/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutUser(Guid id, User user)
+        {
+            _logger.LogInformation($"Executando PUT em api/user/{id}");
+
+            _context.Entry(user).State = EntityState.Modified;
+            _context.Entry(user).Property(p => p.CreationDate).IsModified = false;
+
+            try
+            {
+                _logger.LogInformation($"Verificando dados para salvar");
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!UserExists(id))
+                {
+                    _logger.LogWarning($"Não existe registro de um Usuário com Id={id}");
+                    return NotFound();
+                }
+                else
+                    throw;
+            }
+
+            _logger.LogInformation($"Atualização efetuada com sucesso para o User com ID={id}");
+            return NoContent();
+        }
+
+        // POST: api/User
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public virtual async Task<IActionResult> Post(UserRequest request)
+        public async Task<ActionResult<User>> PostUser(User user)
         {
-            var response = await service.Create(request);
-            return Ok(response);
+            _logger.LogInformation($"Executando POST para api/user");
+
+            user.CreationDate = null;
+            _context.User.Add(user);
+            await _context.SaveChangesAsync();
+
+            _logger.LogInformation($"");
+            return CreatedAtAction("GetUser", new { id = user.Id }, user);
         }
 
-        [HttpPut]
-        public virtual async Task<IActionResult> Put(UserRequest request)
+        // DELETE: api/User/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(Guid id)
         {
-            var response = await service.Update(request);
-            return Ok(response);
+            _logger.LogInformation($"Executando DELETE para api/users/${id}");
+            var user = await _context.User.FindAsync(id);
+            if (user == null)
+            { 
+                _logger.LogWarning($"Não existe registro de um Usuário com Id={id}");
+                return NotFound();
+            }
+
+            _logger.LogInformation("Iniciando tentativa de remoção");
+            _context.User.Remove(user);
+            await _context.SaveChangesAsync();
+
+            _logger.LogInformation($"O usuário de Id={id} foi removido com sucesso");
+            return NoContent();
+        }
+
+        private bool UserExists(Guid id)
+        {
+            return _context.User.Any(e => e.Id == id);
         }
     }
 }
