@@ -9,7 +9,7 @@ services:
       MYSQL_ROOT_PASSWORD: "MySql123456"
       MYSQL_DATABASE: "apisharp-db"
     volumes:
-      - ./data:/var/lib/mysql
+      - ./Data:/var/lib/mysql
     restart: always
 
   api:
@@ -17,4 +17,6 @@ services:
     container_name: api
     ports:
       - "8080:5000"
+    volumes:
+      - ./Logs:/app/Logs
     restart: always

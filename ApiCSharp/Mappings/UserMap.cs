@@ -13,15 +13,14 @@ namespace api_csharp.Mappings
                 .HasDefaultValue(DateTime.Now);
 
             builder.Property(user => user.FirstName)
-                .HasColumnType("varchar(150)")
+                .HasMaxLength(150)
                 .IsRequired();
 
             builder.Property(user => user.SurName)
-                .HasColumnType("varchar(150)");
+                .HasMaxLength(150);
 
             builder.Property(user => user.Age)
                 .IsRequired();
-
         }
     }
 }

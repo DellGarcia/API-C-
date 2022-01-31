@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Api_CSharp.Models {
   public class User {
-    public Guid Id { get; set; }
+    public Guid? Id { get; set; }
 
     [Required]
     public string FirstName { get; set; }
