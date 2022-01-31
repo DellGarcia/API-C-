@@ -2,12 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Api_CSharp.Database;
 using Api_CSharp.Models;
+
 
 namespace Api_CSharp.Controllers
 {
@@ -26,11 +25,11 @@ namespace Api_CSharp.Controllers
 
         // GET: api/User
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUser()
+        public ActionResult<IEnumerable<User>> GetUser()
         {
             _logger.LogInformation($"Executando GET em api/user");
-            var result = await _context.User.ToListAsync();
-            _logger.LogInformation($"Foram obtidos {result.Count} usu�rios");
+            var result = _context.User.ToList();
+            _logger.LogInformation($"Foram obtidos {result.Count} usuários");
             return result;
         }
 
@@ -43,11 +42,11 @@ namespace Api_CSharp.Controllers
 
             if (user == null)
             {
-                _logger.LogWarning($"N�o existe registro de um Usu�rio com Id={id}");
-                return NotFound();
+                _logger.LogWarning($"Não existe registro de um Usuário com Id={id}");
+                return NotFound(new { error = "Registro não encontrado" });
             }
 
-            _logger.LogInformation($"Usu�rio Id={id} encontrado");
+            _logger.LogInformation($"Usuário Id={id} encontrado");
             return user;
         }
 
@@ -56,32 +55,33 @@ namespace Api_CSharp.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutUser(Guid id, User user)
         {
-            user.Id = id;
             _logger.LogInformation($"Executando PUT em api/user/{id}");
+            
+            if (!UserExists(id))
+            {
+                _logger.LogWarning($"Não existe registro de um Usuário com Id={id}");
+                return NotFound(new { error = "Registro não encontrado" });
+            }
 
             if (!IsRequiredFieldsCorrectlyFilled(user))
-                return BadRequest();
+                return BadRequest(new { 
+                    error = "Os campos não foram preenchidos corretamente", 
+                    detail = "firstName e idade são obrigatórios e a idade deve ser superior a 12"
+                });
 
-            _context.Entry(user).State = EntityState.Modified;
-            _context.Entry(user).Property(p => p.CreationDate).IsModified = false;
+            if(IsInvalidFieldsFilled(user))
+                return BadRequest(new { error = "Requisição inválida" });
 
-            try
-            {
-                _logger.LogInformation($"Verificando dados para salvar");
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UserExists(id))
-                {
-                    _logger.LogWarning($"N�o existe registro de um Usu�rio com Id={id}");
-                    return NotFound();
-                }
-                else
-                    throw;
-            }
+            user.Id = id;
 
-            _logger.LogInformation($"Atualiza��o efetuada com sucesso para o User com ID={id}");
+            _context.Update(user)
+                .Property(p => p.CreationDate)
+                .IsModified = false;
+            
+            _logger.LogInformation($"Verificando dados para salvar");
+            await _context.SaveChangesAsync();
+
+            _logger.LogInformation($"Atualização efetuada com sucesso para o User com ID={id}");
             return NoContent();
         }
 
@@ -92,14 +92,21 @@ namespace Api_CSharp.Controllers
         {
             _logger.LogInformation($"Executando POST para api/user");
 
-            if(!IsRequiredFieldsCorrectlyFilled(user))
-                return BadRequest();
+            if(IsInvalidFieldsFilled(user))
+                return BadRequest(new { error = "Requisição inválida" });
 
-            user.CreationDate = null;
+            if (!IsRequiredFieldsCorrectlyFilled(user))
+                return BadRequest(new { 
+                    error = "Os campos não foram preenchidos corretamente", 
+                    detail = "firstName e idade são obrigatórios e a idade deve ser superior a 12"
+                });
+
+            user.CreationDate = DateTime.Now;
+
             _context.User.Add(user);
             await _context.SaveChangesAsync();
 
-            _logger.LogInformation($"");
+            _logger.LogInformation($"Registro criado com sucesso");
             return CreatedAtAction("GetUser", new { id = user.Id }, user);
         }
 
@@ -111,15 +118,16 @@ namespace Api_CSharp.Controllers
             var user = await _context.User.FindAsync(id);
             if (user == null)
             { 
-                _logger.LogWarning($"N�o existe registro de um Usu�rio com Id={id}");
-                return NotFound();
+                _logger.LogWarning($"Não existe registro de um Usuário com Id={id}");
+                return NotFound(new { error = "Registro não encontrado" });
             }
 
-            _logger.LogInformation("Iniciando tentativa de remo��o");
+            _logger.LogInformation("Iniciando tentativa de remoção");
+
             _context.User.Remove(user);
             await _context.SaveChangesAsync();
 
-            _logger.LogInformation($"O usu�rio de Id={id} foi removido com sucesso");
+            _logger.LogInformation($"O usuário de Id={id} foi removido com sucesso");
             return NoContent();
         }
 
@@ -128,9 +136,13 @@ namespace Api_CSharp.Controllers
             return _context.User.Any(e => e.Id == id);
         }
 
-        private bool IsRequiredFieldsCorrectlyFilled(User user)
+        private static bool IsRequiredFieldsCorrectlyFilled(User user)
         {
             return user.FirstName != null && user.Age > 12 && user.Age < 200;
+        }
+
+        private static bool IsInvalidFieldsFilled(User user) {
+            return user.Id != null || user.CreationDate != null;
         }
     }
 }

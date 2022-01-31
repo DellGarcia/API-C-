@@ -10,12 +10,13 @@ using Api_CSharp.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net;
 
 namespace api_csharp.tests
 {
     public class UserControllerTest
     {
-
         #region Get Tests
         
         [Fact]
@@ -35,7 +36,7 @@ namespace api_csharp.tests
             var result = (await controller.GetUser(Guid.NewGuid())).Result;
 
             // assert
-            Assert.IsType<NotFoundResult>(result);
+            Assert.IsType<NotFoundObjectResult>(result);
         }
 
         [Fact]
@@ -65,7 +66,7 @@ namespace api_csharp.tests
         }
 
         [Fact]
-        public async void GetUser_WithoutIdInRoute_ReturnsListOfAllUsers()
+        public void GetUser_WithoutIdInRoute_ReturnsListOfAllUsers()
         {
             // arrange
             var logger = new Mock<ILogger<UserController>>();
@@ -81,12 +82,13 @@ namespace api_csharp.tests
 
             users.ForEach(u => dbSet.Object.Add(u));
 
+            dbSet.Setup(c => c.ToList()).Returns(users);
             context.Setup(c => c.User).Returns(dbSet.Object);
 
             var controller = new UserController(logger.Object, context.Object);
 
             // act
-            var value = (await controller.GetUser()).Value;
+            var value = controller.GetUser().Value;
 
             // assert
             Assert.IsAssignableFrom<IEnumerable<User>>(value);
@@ -126,10 +128,6 @@ namespace api_csharp.tests
 
             // assert
             Assert.IsType<User>(registeredUser);
-            if (registeredUser.GetType() == typeof(User))
-            {
-                Assert.IsType<Guid>(((User)registeredUser).Id);
-            }
         }
 
         [Fact]
@@ -156,7 +154,7 @@ namespace api_csharp.tests
             var actionResult = await controller.PostUser(user);
 
             // assert
-            Assert.IsType<BadRequestResult>(actionResult.Result);
+            Assert.IsType<BadRequestObjectResult>(actionResult.Result);
         }
 
         [Fact]
@@ -183,7 +181,7 @@ namespace api_csharp.tests
             var actionResult = await controller.PostUser(user);
 
             // assert
-            Assert.IsType<BadRequestResult>(actionResult.Result);
+            Assert.IsType<BadRequestObjectResult>(actionResult.Result);
         }
 
         #endregion
@@ -233,7 +231,7 @@ namespace api_csharp.tests
             var value = await controller.DeleteUser(Guid.NewGuid());
 
             // assert
-            Assert.IsType<NotFoundResult>(value);
+            Assert.IsType<NotFoundObjectResult>(value);
         }
 
         #endregion
@@ -247,15 +245,76 @@ namespace api_csharp.tests
             var logger = new Mock<ILogger<UserController>>();
             var context = new Mock<ApplicationDBContext>();
             var dbSet = new Mock<DbSet<User>>();
-            Guid uid = It.IsAny<Guid>();
+            Guid uid = Guid.NewGuid();
 
             User previousUserData = new()
             {
                 Id = uid,
                 FirstName = "Lucasss",
-                SurName = null,
+                SurName = "",
                 Age = 20
             };
+
+            User newUserData = new()
+            {
+                FirstName = "Lucas",
+                SurName = "Garcia",
+                Age = 20
+            };
+
+            dbSet.Object.Add(previousUserData);
+            context.Setup(c => c.User).Returns(dbSet.Object);
+            await context.Object.SaveChangesAsync();
+
+            context.Setup(c => c.Update(previousUserData));
+
+            var controller = new UserController(logger.Object, context.Object);
+
+            // act
+            var value = await controller.PutUser(uid, newUserData);
+
+            // assert
+            Assert.IsType<NoContentResult>(value);
+        }
+
+
+        [Fact]
+        public async void PutUser_UserIsNotValid_ReturnsBadRequest()
+        {
+            // arrange
+            var logger = new Mock<ILogger<UserController>>();
+            var context = new Mock<ApplicationDBContext>();
+            var dbSet = new Mock<DbSet<User>>();
+            Guid uid = Guid.NewGuid();
+
+            User invalidUser = new()
+            {
+                Id = uid,
+                FirstName = "Lucas",
+                SurName = "Garcia",
+                Age = 5
+            };
+
+            dbSet.Object.Add(invalidUser);
+            context.Setup(c => c.User).Returns(dbSet.Object);
+
+            var controller = new UserController(logger.Object, context.Object);
+
+            // act
+            var value = await controller.PutUser(uid, invalidUser);
+
+            // assert
+            Assert.IsType<BadRequestObjectResult>(value);
+        }
+
+        [Fact]
+        public async void PutUser_UserNotExist_ReturnsNotFound()
+        {
+            // arrange
+            var logger = new Mock<ILogger<UserController>>();
+            var context = new Mock<ApplicationDBContext>();
+            var dbSet = new Mock<DbSet<User>>();
+            Guid uid = Guid.NewGuid();
 
             User newUserData = new()
             {
@@ -265,17 +324,15 @@ namespace api_csharp.tests
                 Age = 20
             };
 
+            //dbSet.Setup(c => c.Any(e => newUserData.Id == uid)).Returns(false);
             context.Setup(c => c.User).Returns(dbSet.Object);
-            context.Object.Entry(previousUserData).State = EntityState.Added;
-            context.Object.SaveChanges();
 
             var controller = new UserController(logger.Object, context.Object);
-
             // act
             var value = await controller.PutUser(uid, newUserData);
 
             // assert
-            Assert.IsType<NoContentResult>(value);
+            Assert.IsType<NotFoundObjectResult>(value);
         }
 
         #endregion

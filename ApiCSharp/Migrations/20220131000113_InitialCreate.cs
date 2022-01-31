@@ -20,7 +20,7 @@ namespace Api_CSharp.Migrations
                     SurName = table.Column<string>(type: "varchar(150)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Age = table.Column<int>(type: "int", nullable: false),
-                    CreationDate = table.Column<DateTime>(type: "datetime(6)", nullable: false, defaultValue: new DateTime(2022, 1, 28, 11, 3, 44, 709, DateTimeKind.Local).AddTicks(3036))
+                    CreationDate = table.Column<DateTime>(type: "datetime(6)", nullable: true, defaultValue: new DateTime(2022, 1, 30, 21, 1, 12, 984, DateTimeKind.Local).AddTicks(5678))
                 },
                 constraints: table =>
                 {
