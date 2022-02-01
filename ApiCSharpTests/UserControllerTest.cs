@@ -10,13 +10,38 @@ using Api_CSharp.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Net;
 
 namespace api_csharp.tests
 {
-    public class UserControllerTest
+    public class UserControllerTest : IDisposable
     {
+        private readonly ApplicationDBContext _context;
+        private readonly UserController _controller;
+
+        public UserControllerTest()
+        {
+            var dbContextOptions = new DbContextOptionsBuilder<ApplicationDBContext>()
+                .UseInMemoryDatabase("apisharp-db")
+                .EnableSensitiveDataLogging();
+
+            _context = new ApplicationDBContext(dbContextOptions.Options);
+            _context.Database.EnsureCreated();
+
+            Mock<ILogger<UserController>> logger = new Mock<ILogger<UserController>>();
+            _controller = new UserController(logger.Object, _context);
+        }
+
+        public void Dispose()
+        {
+            try
+            {
+                _context.User.RemoveRange(_context.User);
+                _context.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException) { }
+            _context.Dispose();
+        }
+
         #region Get Tests
         
         [Fact]
@@ -66,36 +91,28 @@ namespace api_csharp.tests
         }
 
         [Fact]
-        public void GetUser_WithoutIdInRoute_ReturnsListOfAllUsers()
+        public async void GetUser_WithoutIdInRoute_ReturnsListOfAllUsers()
         {
             // arrange
-            var logger = new Mock<ILogger<UserController>>();
-            var context = new Mock<ApplicationDBContext>();
-            var dbSet = new Mock<DbSet<User>>();
-
             List<User> users = new()
             {
-                new User(),
-                new User(),
-                new User()
+                new User() { Id = Guid.NewGuid(), FirstName = "Lucas", Age = 19 },
+                new User() { Id = Guid.NewGuid(), FirstName = "Felipe", Age= 25 },
+                new User() { Id = Guid.NewGuid(), FirstName = "Guilherme", Age = 35 }
             };
 
-            users.ForEach(u => dbSet.Object.Add(u));
-
-            dbSet.Setup(c => c.ToList()).Returns(users);
-            context.Setup(c => c.User).Returns(dbSet.Object);
-
-            var controller = new UserController(logger.Object, context.Object);
+            users.ForEach(u => _context.User.Add(u));
+            await _context.SaveChangesAsync();
 
             // act
-            var value = controller.GetUser().Value;
+            var value = _controller.GetUser().Value;
 
             // assert
             Assert.IsAssignableFrom<IEnumerable<User>>(value);
 
             List<User> result = Enumerable.ToList(value);
 
-            Assert.Equal(result.Count, users.Count);
+            Assert.Equal(users.Count, result.Count);
         }
 
         #endregion
@@ -242,9 +259,6 @@ namespace api_csharp.tests
         public async void PutUser_UserIsValid_ReturnsNoContent()
         {
             // arrange
-            var logger = new Mock<ILogger<UserController>>();
-            var context = new Mock<ApplicationDBContext>();
-            var dbSet = new Mock<DbSet<User>>();
             Guid uid = Guid.NewGuid();
 
             User previousUserData = new()
@@ -255,23 +269,18 @@ namespace api_csharp.tests
                 Age = 20
             };
 
-            User newUserData = new()
+            User invalidUserUpdate = new()
             {
                 FirstName = "Lucas",
                 SurName = "Garcia",
-                Age = 20
+                Age = 15
             };
 
-            dbSet.Object.Add(previousUserData);
-            context.Setup(c => c.User).Returns(dbSet.Object);
-            await context.Object.SaveChangesAsync();
-
-            context.Setup(c => c.Update(previousUserData));
-
-            var controller = new UserController(logger.Object, context.Object);
+            _context.User.Add(previousUserData);
+            _context.SaveChanges();
 
             // act
-            var value = await controller.PutUser(uid, newUserData);
+            var value = await _controller.PutUser(uid, invalidUserUpdate);
 
             // assert
             Assert.IsType<NoContentResult>(value);
@@ -282,26 +291,28 @@ namespace api_csharp.tests
         public async void PutUser_UserIsNotValid_ReturnsBadRequest()
         {
             // arrange
-            var logger = new Mock<ILogger<UserController>>();
-            var context = new Mock<ApplicationDBContext>();
-            var dbSet = new Mock<DbSet<User>>();
             Guid uid = Guid.NewGuid();
 
-            User invalidUser = new()
+            User previousUserData = new()
             {
                 Id = uid,
+                FirstName = "Lucasss",
+                SurName = "",
+                Age = 20
+            };
+
+            User invalidUserUpdate = new()
+            {
                 FirstName = "Lucas",
                 SurName = "Garcia",
                 Age = 5
             };
 
-            dbSet.Object.Add(invalidUser);
-            context.Setup(c => c.User).Returns(dbSet.Object);
-
-            var controller = new UserController(logger.Object, context.Object);
+            _context.User.Add(previousUserData);
+            _context.SaveChanges();
 
             // act
-            var value = await controller.PutUser(uid, invalidUser);
+            var value = await _controller.PutUser(uid, invalidUserUpdate);
 
             // assert
             Assert.IsType<BadRequestObjectResult>(value);
@@ -311,9 +322,6 @@ namespace api_csharp.tests
         public async void PutUser_UserNotExist_ReturnsNotFound()
         {
             // arrange
-            var logger = new Mock<ILogger<UserController>>();
-            var context = new Mock<ApplicationDBContext>();
-            var dbSet = new Mock<DbSet<User>>();
             Guid uid = Guid.NewGuid();
 
             User newUserData = new()
@@ -324,12 +332,8 @@ namespace api_csharp.tests
                 Age = 20
             };
 
-            //dbSet.Setup(c => c.Any(e => newUserData.Id == uid)).Returns(false);
-            context.Setup(c => c.User).Returns(dbSet.Object);
-
-            var controller = new UserController(logger.Object, context.Object);
             // act
-            var value = await controller.PutUser(uid, newUserData);
+            var value = await _controller.PutUser(uid, newUserData);
 
             // assert
             Assert.IsType<NotFoundObjectResult>(value);
