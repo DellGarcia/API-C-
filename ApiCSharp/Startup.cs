@@ -31,8 +31,9 @@ namespace Api_CSharp
             string connectionString = Configuration.GetConnectionString("DefaultConnection");
             // string connectionString = Configuration.GetConnectionString("LocalConnection");
 
-            services.AddDbContext<ApplicationDBContext>(options => 
+            services.AddDbContext<ApplicationDBContext>(options =>
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+                
 
             services.AddControllers();
         }

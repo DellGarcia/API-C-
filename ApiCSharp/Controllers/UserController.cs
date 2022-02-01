@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Api_CSharp.Database;
 using Api_CSharp.Models;
-
+using Microsoft.EntityFrameworkCore;
 
 namespace Api_CSharp.Controllers
 {
@@ -74,10 +74,10 @@ namespace Api_CSharp.Controllers
 
             user.Id = id;
 
-            _context.Update(user)
-                .Property(p => p.CreationDate)
-                .IsModified = false;
-            
+            var entry = _context.User.First(e => e.Id == id);
+            _context.Entry(entry).CurrentValues.SetValues(user);
+            _context.SaveChanges();
+
             _logger.LogInformation($"Verificando dados para salvar");
             await _context.SaveChangesAsync();
 
