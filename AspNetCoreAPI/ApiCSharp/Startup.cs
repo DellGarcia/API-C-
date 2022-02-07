@@ -28,12 +28,13 @@ namespace Api_CSharp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            string connectionString = Configuration.GetConnectionString("DefaultConnection");
-            // string connectionString = Configuration.GetConnectionString("LocalConnection");
+            // string connectionString = Configuration.GetConnectionString("DefaultConnection");
+            string connectionString = Configuration.GetConnectionString("LocalConnection");
 
             services.AddDbContext<ApplicationDBContext>(options =>
                 options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
-                
+
+            services.AddCors();
 
             services.AddControllers();
         }
@@ -45,6 +46,8 @@ namespace Api_CSharp
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors(option => option.AllowAnyOrigin());
 
             app.UseRouting();
 
