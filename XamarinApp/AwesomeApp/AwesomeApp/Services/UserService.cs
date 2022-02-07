@@ -41,7 +41,6 @@ namespace AwesomeApp.Services
         {
             var response = await _httpClient.PostAsync("user",
                 new StringContent(JsonSerializer.Serialize(user), Encoding.UTF8, "application/json"));
-
             response.EnsureSuccessStatusCode();
         }
 

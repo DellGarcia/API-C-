@@ -1,17 +1,37 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:viewmodels="clr-namespace:AwesomeApp.ViewModels" 
              x:Class="AwesomeApp.Pages.UserRegisterPage">
     <ContentPage.Content>
-        <StackLayout VerticalOptions="CenterAndExpand" Margin="15">
-            <Label Text="Nome:" FontSize="Large" Margin="3, 0"/>
-            <Entry Placeholder="Digite seu nome" ClearButtonVisibility="WhileEditing" Keyboard="Text" Margin="0, 0, 0, 25"/>
-            
-            <Label Text="Sobrenome:" FontSize="Large" Margin="3, 0"/>
-            <Entry Placeholder="Digite seu sobrenome" ClearButtonVisibility="WhileEditing" Keyboard="Numeric" Margin="0, 0, 0, 25"/>
-            
-            <Label Text="Idade:" FontSize="Large" Margin="3, 0"/>
-            <Entry Placeholder="Digite sua idade" ClearButtonVisibility="WhileEditing" Keyboard="Numeric" Margin="0, 0, 0, 25"/>
-        </StackLayout>
+        <ScrollView>
+            <StackLayout VerticalOptions="CenterAndExpand" Margin="15" 
+                         x:DataType="viewmodels:UserRegisterViewModel">
+                
+                <Label Text="Nome:" FontSize="Large" Margin="3, 0"/>
+                <Entry Placeholder="Digite seu nome" Text="{Binding FirstName}" 
+                       ClearButtonVisibility="WhileEditing" Keyboard="Text" 
+                       Margin="0, 0, 0, 25"/>
+
+                <Label Text="Sobrenome:" FontSize="Large" Margin="3, 0"/>
+                <Entry Placeholder="Digite seu sobrenome" Text="{Binding Surname}" 
+                       ClearButtonVisibility="WhileEditing" Keyboard="Text" 
+                       Margin="0, 0, 0, 25"/>
+
+                <Label Text="Idade:" FontSize="Large" Margin="3, 0"/>
+                <Entry Placeholder="Digite sua idade" Text="{Binding Age}"
+                       ClearButtonVisibility="WhileEditing" Keyboard="Numeric" 
+                       Margin="0, 0, 0, 25"/>
+
+                <Grid Margin="0, 50, 0, 0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button Text="Confirmar" BackgroundColor="DarkGreen" Margin="5,0,0,0"
+                            Command="{Binding SaveUser}"/>
+                </Grid>
+            </StackLayout>
+        </ScrollView>
     </ContentPage.Content>
 </ContentPage>
