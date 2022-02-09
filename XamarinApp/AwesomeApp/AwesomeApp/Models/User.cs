@@ -8,7 +8,7 @@ namespace AwesomeApp.Models
     public class User
     {
         [JsonPropertyName("id")]
-        public Guid Id { get; set; }
+        public Guid? Id { get; set; }
 
         [JsonPropertyName("firstName")]
         public string FirstName { get; set; }
@@ -16,8 +16,11 @@ namespace AwesomeApp.Models
         [JsonPropertyName("surName")]
         public string SurName { get; set; }
 
+        [JsonPropertyName("age")]
+        public int? Age { get; set; }
+
         [JsonPropertyName("creationDate")]
-        public DateTime CreationDate { get; set; }
+        public DateTime? CreationDate { get; set; }
 
     }
 }

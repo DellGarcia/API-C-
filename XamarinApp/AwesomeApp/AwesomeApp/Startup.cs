@@ -17,7 +17,7 @@ namespace XamWebApiClient
             //add services
             services.AddHttpClient<IUserService, UserService>(c =>
             {
-                c.BaseAddress = new Uri("https://neat-moth-3.loca.lt/api/");
+                c.BaseAddress = new Uri("https://witty-otter-14.loca.lt/api/");
                 c.DefaultRequestHeaders.Add("Accept", "application/json");
             })
             .ConfigurePrimaryHttpMessageHandler(_ => new HttpClientHandler
@@ -27,6 +27,7 @@ namespace XamWebApiClient
 
             //add viewmodels
             services.AddTransient<MainPageViewModel>();
+            services.AddTransient<UserRegisterViewModel>();
             services.AddTransient<TestViewModel>();
 
             ServiceProvider = services.BuildServiceProvider();

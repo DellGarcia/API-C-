@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using AwesomeApp.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using XamWebApiClient;
 
 namespace AwesomeApp.Pages
 {
@@ -15,6 +11,8 @@ namespace AwesomeApp.Pages
         public UserRegisterPage()
         {
             InitializeComponent();
+            BindingContext =
+                Startup.ServiceProvider.GetService<UserRegisterViewModel>();
         }
     }
 }
