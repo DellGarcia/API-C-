@@ -100,7 +100,7 @@ namespace AwesomeApp.ViewModels
                 BindingContext = confirmationVM
             };
 
-            Application.Current.MainPage.Navigation.PushAsync(confirmationPage);
+            Application.Current.MainPage.Navigation.PushModalAsync(confirmationPage);
         }
     }
 }

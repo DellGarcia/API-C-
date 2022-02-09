@@ -15,11 +15,11 @@ namespace AwesomeApp
             InitializeComponent();
 
             Startup.ConfigureServices();
-            DependencyService.Register<IUserService, UserService>();
-            DependencyService.Register<TestViewModel>();
-            DependencyService.Register<UserRegisterViewModel>();
+            //DependencyService.Register<IUserService, UserService>();
+            //DependencyService.Register<UserListViewModel>();
+            //DependencyService.Register<UserRegisterViewModel>();
 
-            MainPage = new NavigationPage(new UserRegisterPage());
+            MainPage = new NavigationPage(new UserListPage());
         }
 
         protected override void OnStart()

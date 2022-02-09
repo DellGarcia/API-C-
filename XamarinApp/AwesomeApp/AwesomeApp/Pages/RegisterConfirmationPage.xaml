@@ -3,13 +3,25 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="AwesomeApp.Pages.RegisterConfirmationPage">
     <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Sua conta foi criada!"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
-            <Label Text="{Binding WelcomeMessage}"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
-        </StackLayout>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="8*"/>
+                <RowDefinition Height="2*"/>
+            </Grid.RowDefinitions>
+            
+            <StackLayout Grid.Row="0" 
+                         HorizontalOptions="CenterAndExpand" 
+                         VerticalOptions="CenterAndExpand">
+                <Label Text="Sua conta foi criada!" FontSize="Large"/>
+                <Label Text="{Binding WelcomeMessage}" FontSize="Subtitle" HorizontalOptions="Center"/>
+            </StackLayout>
+
+            <StackLayout Grid.Row="1" VerticalOptions="End" 
+                         Orientation="Horizontal" 
+                         HorizontalOptions="CenterAndExpand">
+                <Label Text="Começar " />
+                <Image Source="arrowRight" HeightRequest="20"/>
+            </StackLayout>
+        </Grid>
     </ContentPage.Content>
 </ContentPage>
