@@ -19,7 +19,7 @@ namespace AwesomeApp
             DependencyService.Register<TestViewModel>();
             DependencyService.Register<UserRegisterViewModel>();
 
-            MainPage = new NavigationPage(new TestPage());
+            MainPage = new NavigationPage(new UserRegisterPage());
         }
 
         protected override void OnStart()

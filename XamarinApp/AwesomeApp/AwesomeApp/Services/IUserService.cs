@@ -12,7 +12,7 @@ namespace AwesomeApp.Services
 
         Task<User> GetUser(Guid id);
 
-        Task AddUser(User user);
+        Task<User> AddUser(User user);
 
         Task SaveUser(User user);
 

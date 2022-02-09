@@ -37,11 +37,14 @@ namespace AwesomeApp.Services
             return JsonSerializer.Deserialize<User>(responseAsString);
         }
 
-        public async Task AddUser(User user)
+        public async Task<User> AddUser(User user)
         {
             var response = await _httpClient.PostAsync("user",
                 new StringContent(JsonSerializer.Serialize(user), Encoding.UTF8, "application/json"));
             response.EnsureSuccessStatusCode();
+
+            var responseAsString = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<User>(responseAsString);
         }
 
         public async Task DeleteUser(User user)

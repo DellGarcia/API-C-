@@ -1,4 +1,5 @@
 ﻿using AwesomeApp.Models;
+using AwesomeApp.Pages;
 using AwesomeApp.Services;
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,7 @@ namespace AwesomeApp.ViewModels
         {
             _userService = userService;
 
-            SaveUser = new Command(() =>
+            SaveUser = new Command(async () =>
             {
                 User user = new User()
                 {
@@ -28,9 +29,18 @@ namespace AwesomeApp.ViewModels
                     Age = _age
                 };
 
-                _userService.AddUser(user);
+                if(IsUserFieldsValid(user))
+                {
+                    var result = await _userService.AddUser(user);
+                    if (typeof(User).IsInstanceOfType(result))
+                        MoveToUserRegisterConfirmationPage(user);
+                    else
+                        Console.WriteLine("Deu ruim");
+                }
             });
         }
+
+        #region Binding Variables
 
         private string _firstName;
 
@@ -66,6 +76,31 @@ namespace AwesomeApp.ViewModels
                 _age = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Age)));
             }
+        }
+
+        #endregion
+    
+        private bool IsUserFieldsValid(User user)
+        {
+            if (user.FirstName == string.Empty || user.FirstName == null)
+                return false;
+
+            if (user.Age < 13 || user.Age > 200 || user.Age == null)
+                return false;
+
+            return true;
+        }
+    
+        private void MoveToUserRegisterConfirmationPage(User user)
+        {
+            var confirmationVM = new RegisterConfirmationViewModel(user);
+
+            var confirmationPage = new RegisterConfirmationPage
+            {
+                BindingContext = confirmationVM
+            };
+
+            Application.Current.MainPage.Navigation.PushAsync(confirmationPage);
         }
     }
 }
