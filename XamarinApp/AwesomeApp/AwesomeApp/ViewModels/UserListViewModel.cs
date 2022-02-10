@@ -6,6 +6,9 @@ using Xamarin.Forms;
 using System.Collections.ObjectModel;
 using AwesomeApp.Models;
 using AwesomeApp.Services;
+using AwesomeApp.Pages;
+using XamWebApiClient;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AwesomeApp.ViewModels
 {
@@ -32,7 +35,8 @@ namespace AwesomeApp.ViewModels
             });
 
             SaveUserCommand = new Command(() => {
-                
+                MoveToSaveUserPage(SelectedUser);
+                SelectedUser = null;
             });
 
             GetUsers();
@@ -66,15 +70,15 @@ namespace AwesomeApp.ViewModels
 
         private void MoveToSaveUserPage(User user)
         {
-            //var saveUserVM = new RegisterConfirmationViewModel(user);
+            var saveUserVM = Startup.ServiceProvider.GetService<UserSaveViewModel>();
+            saveUserVM.Init(user);
 
-            //var savePage = new SaveUserPage
-            //{
-            //    BindingContext = saveUserVM
-            //};
+            var savePage = new UserSavePage
+            {
+                BindingContext = saveUserVM
+            };
 
-            //Application.Current.MainPage.Navigation.PushModalAsync(savePage);
-            Console.WriteLine($"Moving to save page for {user.FirstName}");
+            Application.Current.MainPage.Navigation.PushAsync(savePage);
         }
 
         private async void GetUsers()

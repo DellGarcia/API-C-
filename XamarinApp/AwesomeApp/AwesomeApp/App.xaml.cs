@@ -15,9 +15,6 @@ namespace AwesomeApp
             InitializeComponent();
 
             Startup.ConfigureServices();
-            //DependencyService.Register<IUserService, UserService>();
-            //DependencyService.Register<UserListViewModel>();
-            //DependencyService.Register<UserRegisterViewModel>();
 
             MainPage = new NavigationPage(new UserListPage());
         }

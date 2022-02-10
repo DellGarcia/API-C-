@@ -17,7 +17,7 @@ namespace XamWebApiClient
             //add services
             services.AddHttpClient<IUserService, UserService>(c =>
             {
-                c.BaseAddress = new Uri("https://apicsharpderu.loca.lt/api/");
+                c.BaseAddress = new Uri("http://43df-143-0-57-126.ngrok.io/api/");
                 c.DefaultRequestHeaders.Add("Accept", "application/json");
             })
             .ConfigurePrimaryHttpMessageHandler(_ => new HttpClientHandler
@@ -28,6 +28,7 @@ namespace XamWebApiClient
 
             //add viewmodels
             services.AddTransient<UserRegisterViewModel>();
+            services.AddTransient<UserSaveViewModel>();
             services.AddTransient<UserListViewModel>();
 
             ServiceProvider = services.BuildServiceProvider();

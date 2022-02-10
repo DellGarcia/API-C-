@@ -7,11 +7,11 @@ using Xamarin.Forms;
 
 namespace AwesomeApp.ViewModels
 {
-    public class RegisterConfirmationViewModel : INotifyPropertyChanged
+    public class SaveUserViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public RegisterConfirmationViewModel(User user)
+        public SaveUserViewModel(User user)
         {
             WelcomeMessage = $"Seja bem vindo(a), {user.FirstName}";
         }
