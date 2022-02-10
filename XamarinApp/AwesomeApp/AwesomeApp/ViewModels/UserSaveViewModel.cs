@@ -1,41 +1,42 @@
-﻿using AwesomeApp.Models;
-using AwesomeApp.Pages;
-using AwesomeApp.Services;
-using System;
-using System.ComponentModel;
+﻿using System;
 using Xamarin.Forms;
+using System.ComponentModel;
+using AwesomeApp.Services;
+using AwesomeApp.Models;
 
 namespace AwesomeApp.ViewModels
 {
-    public class UserRegisterViewModel : INotifyPropertyChanged
+    public class UserSaveViewModel : INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged;
         private readonly IUserService _userService;
+        private User _user;
+        public event PropertyChangedEventHandler PropertyChanged;
+
 
         public Command SaveUser { get; }
 
-        public UserRegisterViewModel(IUserService userService)
+        public UserSaveViewModel(IUserService userService)
         {
             _userService = userService;
 
             SaveUser = new Command(async () =>
             {
-                User user = new User()
+                User updatedUser = new User()
                 {
+                    Id = _user.Id,
                     FirstName = _firstName,
                     SurName = _surname,
                     Age = _age
                 };
-
-                if(_userService.IsUserFieldsValid(user))
-                {
-                    var result = await _userService.AddUser(user);
-                    if (typeof(User).IsInstanceOfType(result))
-                        MoveToUserRegisterConfirmationPage(user);
-                    else
-                        Console.WriteLine("Deu ruim");
-                }
+                if (_userService.IsUserFieldsValid(updatedUser))
+                    await userService.SaveUser(updatedUser);
             });
+        }
+
+        public void Init(User user)
+        {
+            _user = user;
+            FindUser();
         }
 
         #region Binding Variables
@@ -66,6 +67,8 @@ namespace AwesomeApp.ViewModels
 
         private int? _age;
 
+        
+
         public int? Age
         {
             get => _age;
@@ -77,17 +80,27 @@ namespace AwesomeApp.ViewModels
         }
 
         #endregion
-    
-        private void MoveToUserRegisterConfirmationPage(User user)
+
+        private async void FindUser()
         {
-            var confirmationVM = new SaveUserViewModel(user);
+            _user = await _userService.GetUser((Guid) _user.Id);
 
-            var confirmationPage = new RegisterConfirmationPage
-            {
-                BindingContext = confirmationVM
-            };
-
-            Application.Current.MainPage.Navigation.PushModalAsync(confirmationPage);
+            FirstName = _user.FirstName;
+            Surname = _user.SurName;
+            Age = _user.Age;
         }
+
+        private void MoveToUserSaveConfirmationPage(User user)
+        {
+            //var confirmationVM = new RegisterConfirmationViewModel(user);
+
+            //var confirmationPage = new SaveConfirmationPage
+            //{
+            //    BindingContext = confirmationVM
+            //};
+
+            //Application.Current.MainPage.Navigation.PushModalAsync(confirmationPage);
+        }
+
     }
 }

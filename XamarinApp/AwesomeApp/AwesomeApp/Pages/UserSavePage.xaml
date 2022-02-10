@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit" 
+             xmlns:viewmodels="clr-namespace:AwesomeApp.ViewModels"
+             x:Class="AwesomeApp.Pages.UserSavePage">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="InvalidStyle" TargetType="Entry">
+                <Setter Property="TextColor" Value="Red"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <ScrollView>
+            <StackLayout VerticalOptions="CenterAndExpand" Margin="15" x:DataType="viewmodels:UserSaveViewModel">
+
+                <Label Text="Nome:" FontSize="Large" Margin="3, 0" />
+                <Entry Placeholder="Digite seu nome" Text="{Binding FirstName}" 
+                       ClearButtonVisibility="WhileEditing" Keyboard="Text" 
+                       Margin="0, 0, 0, 25">
+                    <Entry.Behaviors>
+                        <xct:TextValidationBehavior 
+                            MinimumLength="3"            
+                            InvalidStyle="{StaticResource InvalidStyle}"/>
+                    </Entry.Behaviors>
+                </Entry>
+
+                <Label Text="Sobrenome:" FontSize="Large" Margin="3, 0"/>
+                <Entry Placeholder="Digite seu sobrenome" Text="{Binding Surname}" 
+                       ClearButtonVisibility="WhileEditing" Keyboard="Text" 
+                       Margin="0, 0, 0, 25"/>
+
+                <Label Text="Idade:" FontSize="Large" Margin="3, 0"/>
+                <Entry Placeholder="Digite sua idade" Text="{Binding Age}"
+                       ClearButtonVisibility="WhileEditing" Keyboard="Numeric" 
+                       Margin="0, 0, 0, 25">
+                    <Entry.Behaviors>
+                        <xct:MultiValidationBehavior InvalidStyle="{StaticResource InvalidStyle}">
+                            <xct:NumericValidationBehavior xct:MultiValidationBehavior.Error="NaN" />
+                            <xct:NumericValidationBehavior MinimumValue="13"
+                                                       Flags="ValidateOnValueChanging"
+                                                   xct:MultiValidationBehavior.Error="Min: 13" InvalidStyle="{StaticResource InvalidStyle}"/>
+                            <xct:NumericValidationBehavior MaximumValue="200"
+                                                       Flags="ValidateOnValueChanging"
+                                                   xct:MultiValidationBehavior.Error="Max: 200" InvalidStyle="{StaticResource InvalidStyle}"/>
+                        </xct:MultiValidationBehavior>
+                    </Entry.Behaviors>
+                </Entry>
+
+                <Grid Margin="0, 50, 0, 0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button Text="Salvar" 
+                            BackgroundColor="DarkSlateBlue" 
+                            Margin="5,0,0,0" 
+                            HeightRequest="60"
+                            Command="{Binding SaveUser}" 
+                            FontSize="Medium"/>
+                </Grid>
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

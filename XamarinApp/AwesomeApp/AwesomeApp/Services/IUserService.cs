@@ -17,5 +17,7 @@ namespace AwesomeApp.Services
         Task SaveUser(User user);
 
         Task DeleteUser(User user);
+
+        bool IsUserFieldsValid(User user);
     }
 }

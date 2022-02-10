@@ -22236,7 +22236,7 @@ namespace AwesomeApp.Droid
 			public const int tooltip_frame_light = 2131165327;
 			
 			// aapt resource value: 0x7F070090
-			public const int xamagon = 2131165328;
+			public const int user = 2131165328;
 			
 			static Drawable()
 			{

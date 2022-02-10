@@ -17,18 +17,19 @@ namespace XamWebApiClient
             //add services
             services.AddHttpClient<IUserService, UserService>(c =>
             {
-                c.BaseAddress = new Uri("https://witty-otter-14.loca.lt/api/");
+                c.BaseAddress = new Uri("http://43df-143-0-57-126.ngrok.io/api/");
                 c.DefaultRequestHeaders.Add("Accept", "application/json");
             })
             .ConfigurePrimaryHttpMessageHandler(_ => new HttpClientHandler
             {
-                ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => { return true; }
+                ServerCertificateCustomValidationCallback = 
+                    (sender, cert, chain, sslPolicyErrors) => { return true; }
             }); 
 
             //add viewmodels
-            services.AddTransient<MainPageViewModel>();
             services.AddTransient<UserRegisterViewModel>();
-            services.AddTransient<TestViewModel>();
+            services.AddTransient<UserSaveViewModel>();
+            services.AddTransient<UserListViewModel>();
 
             ServiceProvider = services.BuildServiceProvider();
         }

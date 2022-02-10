@@ -5,13 +5,13 @@ using XamWebApiClient;
 
 namespace AwesomeApp.Pages
 {
-    public partial class TestPage : ContentPage
+    public partial class UserListPage : ContentPage
     {
-        public TestPage()
+        public UserListPage()
         {
             InitializeComponent();
             BindingContext = 
-                Startup.ServiceProvider.GetService<TestViewModel>();
+                Startup.ServiceProvider.GetService<UserListViewModel>();
         }
     }
 }

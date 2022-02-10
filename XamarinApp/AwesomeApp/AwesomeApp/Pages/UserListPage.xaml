@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="AwesomeApp.Pages.UserListPage">
+
+    <ContentPage.Content>
+        <StackLayout>
+            <Label Text="Todos os usuários cadastrados" FontSize="Large" 
+                   HorizontalTextAlignment="Center" Margin="0, 15, 0, 5"/>
+            <CollectionView Grid.Row="3" Grid.ColumnSpan="3" Margin="10, 0"
+                            ItemsSource="{Binding AllUsers}" 
+                            SelectionMode="Single"
+                            SelectedItem="{Binding SelectedUser}"
+                            SelectionChangedCommand="{Binding SelectedUserChangedCommand}"
+                            >
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <StackLayout>
+                            <Frame CornerRadius="8" Margin="10, 10" BackgroundColor="GhostWhite">
+                                <StackLayout Orientation="Horizontal">
+                                    <Image Source="user" BackgroundColor="Transparent" HeightRequest="50"/>
+                                    <Label Text="{Binding FirstName}" 
+                                           FontSize="Title" 
+                                           VerticalOptions="CenterAndExpand"
+                                           TextColor="#4D4D50"
+                                           Margin="20, 0"/>
+                                </StackLayout>
+                            </Frame>
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand"> 
+                <Button BackgroundColor="#A73E3E" Text="Excluir" 
+                    IsEnabled="{Binding IsSelected}" 
+                    IsVisible="{Binding IsSelected}"
+                    Command="{Binding DeleteUserCommand}"
+                    Margin="10"
+                    WidthRequest="120"
+                    />
+                <Button BackgroundColor="DarkSlateBlue" Text="Editar" 
+                    IsEnabled="{Binding IsSelected}" 
+                    IsVisible="{Binding IsSelected}"
+                    Command="{Binding SaveUserCommand}" 
+                    Margin="10"
+                    WidthRequest="120"
+                    />
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

@@ -56,10 +56,24 @@ namespace AwesomeApp.Services
 
         public async Task SaveUser(User user)
         {
-            var response = await _httpClient.PutAsync($"user/{user.Id}",
+            Guid? id = user.Id;
+            user.Id = null;
+
+            var response = await _httpClient.PutAsync($"user/{id}",
                 new StringContent(JsonSerializer.Serialize(user), Encoding.UTF8, "application/json"));
 
             response.EnsureSuccessStatusCode();
+        }
+
+        public bool IsUserFieldsValid(User user)
+        {
+            if (user.FirstName == string.Empty || user.FirstName == null)
+                return false;
+
+            if (user.Age < 13 || user.Age > 200 || user.Age == null)
+                return false;
+
+            return true;
         }
     }
 }
