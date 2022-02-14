@@ -16,7 +16,7 @@ namespace AwesomeApp
 
             Startup.ConfigureServices();
 
-            MainPage = new NavigationPage(new UserListPage());
+            MainPage = new NavigationPage(new HomePage());
         }
 
         protected override void OnStart()

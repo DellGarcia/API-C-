@@ -9,9 +9,8 @@ namespace AwesomeApp.ViewModels
     public class UserSaveViewModel : INotifyPropertyChanged
     {
         private readonly IUserService _userService;
-        private User _user;
+        public User _user;
         public event PropertyChangedEventHandler PropertyChanged;
-
 
         public Command SaveUser { get; }
 
@@ -81,7 +80,7 @@ namespace AwesomeApp.ViewModels
 
         #endregion
 
-        private async void FindUser()
+        public async void FindUser()
         {
             _user = await _userService.GetUser((Guid) _user.Id);
 

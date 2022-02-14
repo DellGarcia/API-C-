@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:local="clr-namespace:AwesomeApp.ViewModels"
+             x:Class="AwesomeApp.Pages.HomePage"
+             BackgroundColor="GhostWhite"
+             >
+    <ContentPage.BindingContext>
+        <local:HomeViewModel />
+    </ContentPage.BindingContext>
+    <ContentPage.Content>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <StackLayout Grid.Row="0" VerticalOptions="Center">
+                <Label Text="SCU" 
+                       FontSize="Header" 
+                       HorizontalOptions="Center" 
+                       TextColor="#8a2be2" 
+                       FontFamily="Poppins-Regular.ttf#poppins-Regular"
+                       />
+                <Label Text="Sistema de controle de usuários" 
+                       FontSize="20" HorizontalOptions="Center"
+                       FontFamily="Lato-Bold.ttf#Lato-Bold"/>
+            </StackLayout>
+
+            <StackLayout Grid.Row="1" HorizontalOptions="CenterAndExpand" VerticalOptions="Center" 
+                         Orientation="Horizontal" >
+                <Button 
+                    Text="Novo" 
+                    Command="{Binding OpenRegisterPage}"
+                    TextColor="GhostWhite"
+                    AutomationId="NewButton"/>
+                <Button 
+                    Text="Lista" 
+                    Command="{Binding OpenListPage}"
+                    TextColor="GhostWhite"/>
+            </StackLayout>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>
