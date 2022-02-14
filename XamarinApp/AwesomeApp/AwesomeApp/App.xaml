@@ -3,6 +3,28 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="AwesomeApp.App">
     <Application.Resources>
-
+        <ResourceDictionary>
+            <Style TargetType="NavigationPage">
+                
+            </Style>
+            <Style TargetType="ContentPage">
+                <Setter Property="BackgroundColor" Value="GhostWhite"/>
+            </Style>
+            <Style TargetType="Label">
+                <Setter Property="TextColor" Value="#303030"/>
+                <Setter Property="FontFamily" Value="Lato-Regular.ttf#Lato-Regular" />
+            </Style>
+            <Style TargetType="StackLayout">
+                <Setter Property="BackgroundColor" Value="Transparent"/>
+            </Style>
+            <Style TargetType="Button">
+                <Setter Property="BackgroundColor" Value="#8a2be2"/>
+                <Setter Property="FontSize" Value="Medium" />
+                <Setter Property="Padding" Value="30, 13" />
+                <Setter Property="Margin" Value="5, 0" />
+                <Setter Property="FontFamily" Value="Lato-Regular.ttf#Lato-Regular" />
+                <Setter Property="TextTransform" Value="None" />
+            </Style>
+        </ResourceDictionary>
     </Application.Resources>
 </Application>

@@ -32,8 +32,6 @@ namespace AwesomeApp.ViewModels
                     var result = await _userService.AddUser(user);
                     if (typeof(User).IsInstanceOfType(result))
                         MoveToUserRegisterConfirmationPage(user);
-                    else
-                        Console.WriteLine("Deu ruim");
                 }
             });
         }
@@ -80,7 +78,8 @@ namespace AwesomeApp.ViewModels
     
         private void MoveToUserRegisterConfirmationPage(User user)
         {
-            var confirmationVM = new SaveUserViewModel(user);
+            var confirmationVM = new RegisterConfirmationViewModel();
+            confirmationVM.Init(user);
 
             var confirmationPage = new RegisterConfirmationPage
             {

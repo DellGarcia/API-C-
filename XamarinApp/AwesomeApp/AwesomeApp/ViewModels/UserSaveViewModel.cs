@@ -12,7 +12,6 @@ namespace AwesomeApp.ViewModels
         private User _user;
         public event PropertyChangedEventHandler PropertyChanged;
 
-
         public Command SaveUser { get; }
 
         public UserSaveViewModel(IUserService userService)

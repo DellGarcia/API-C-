@@ -7,13 +7,24 @@ using Xamarin.Forms;
 
 namespace AwesomeApp.ViewModels
 {
-    public class SaveUserViewModel : INotifyPropertyChanged
+    public class RegisterConfirmationViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public SaveUserViewModel(User user)
+        public Command ReturnToRoot { get; }
+
+        public RegisterConfirmationViewModel()
         {
-            WelcomeMessage = $"Seja bem vindo(a), {user.FirstName}";
+            ReturnToRoot = new Command(() =>
+            {
+                Application.Current.MainPage.Navigation.PopModalAsync();
+                Application.Current.MainPage.Navigation.PopToRootAsync();
+            });
+        }
+
+        public void Init(User user)
+        {
+            WelcomeMessage = $"{user.FirstName} é um novo usuário";
         }
 
         private string _welcomeMessage;

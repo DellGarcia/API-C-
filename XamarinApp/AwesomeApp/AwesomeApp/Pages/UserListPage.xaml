@@ -1,12 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="AwesomeApp.Pages.UserListPage">
-
+             x:Class="AwesomeApp.Pages.UserListPage"
+             BackgroundColor="GhostWhite"
+             >
     <ContentPage.Content>
         <StackLayout>
             <Label Text="Todos os usuários cadastrados" FontSize="Large" 
-                   HorizontalTextAlignment="Center" Margin="0, 15, 0, 5"/>
+                   HorizontalTextAlignment="Center" Margin="0, 15, 0, 5" 
+                   TextColor="#4a1e9e"
+                   FontFamily="Poppins-Bold.ttf#Poppins-Bold"/>
             <CollectionView Grid.Row="3" Grid.ColumnSpan="3" Margin="10, 0"
                             ItemsSource="{Binding AllUsers}" 
                             SelectionMode="Single"
@@ -16,36 +19,60 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <StackLayout>
-                            <Frame CornerRadius="8" Margin="10, 10" BackgroundColor="GhostWhite">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup Name="CommonStates">
+                                    <VisualState Name="Selected">
+                                        <VisualState.Setters>
+                                            <Setter Property="BackgroundColor" Value="#a92be2" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState Name="Normal">
+                                        <VisualState.Setters>
+                                            <Setter Property="BackgroundColor" Value="Transparent" />
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Frame CornerRadius="8" Margin="10, 10" BackgroundColor="#8a2be2" Padding="20, 10" HasShadow="True">
                                 <StackLayout Orientation="Horizontal">
-                                    <Image Source="user" BackgroundColor="Transparent" HeightRequest="50"/>
+                                    <Image Source="user2" BackgroundColor="Transparent" 
+                                           HeightRequest="50"/>
                                     <Label Text="{Binding FirstName}" 
-                                           FontSize="Title" 
+                                           FontSize="22" 
                                            VerticalOptions="CenterAndExpand"
-                                           TextColor="#4D4D50"
-                                           Margin="20, 0"/>
+                                           Margin="20, 0"
+                                           AutomationId="UserBox"
+                                           TextColor="GhostWhite"
+                                           FontFamily="Lato-Bold.ttf#Lato-Bold"
+                                           />
                                 </StackLayout>
                             </Frame>
                         </StackLayout>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
-            <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand"> 
-                <Button BackgroundColor="#A73E3E" Text="Excluir" 
-                    IsEnabled="{Binding IsSelected}" 
-                    IsVisible="{Binding IsSelected}"
-                    Command="{Binding DeleteUserCommand}"
-                    Margin="10"
-                    WidthRequest="120"
+            <Frame BackgroundColor="#8a2be2" HeightRequest="70" Padding="10" IsVisible="{Binding IsSelected}">
+                <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
+                    <Button BackgroundColor="#4a1e9e" TextColor="GhostWhite" Text="Excluir" 
+                        IsEnabled="{Binding IsSelected}"
+                        IsVisible="{Binding IsSelected}"
+                        Command="{Binding DeleteUserCommand}"
+                        Margin="10"
+                        WidthRequest="130"
+                        CornerRadius="2"
+                        AutomationId="DeleteButton"
                     />
-                <Button BackgroundColor="DarkSlateBlue" Text="Editar" 
-                    IsEnabled="{Binding IsSelected}" 
-                    IsVisible="{Binding IsSelected}"
-                    Command="{Binding SaveUserCommand}" 
-                    Margin="10"
-                    WidthRequest="120"
+                    <Button BackgroundColor="#4a1e9e" TextColor="GhostWhite" Text="Editar" 
+                        IsEnabled="{Binding IsSelected}" 
+                        IsVisible="{Binding IsSelected}"
+                        Command="{Binding SaveUserCommand}" 
+                        Margin="10"
+                        WidthRequest="130"
+                        CornerRadius="2"
+                        AutomationId="UpdateButton"
                     />
-            </StackLayout>
+                </StackLayout>
+            </Frame>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

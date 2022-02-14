@@ -81,7 +81,7 @@ namespace AwesomeApp.ViewModels
             Application.Current.MainPage.Navigation.PushAsync(savePage);
         }
 
-        private async void GetUsers()
+        public async void GetUsers()
         {
             IEnumerable<User> users = await userService.GetUsers();
             AllUsers.Clear();

@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
              xmlns:viewmodels="clr-namespace:AwesomeApp.ViewModels" 
              xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
-             x:Class="AwesomeApp.Pages.UserRegisterPage">
+             x:Class="AwesomeApp.Pages.UserRegisterPage"
+             BackgroundColor="GhostWhite">
     <ContentPage.Resources>
         <ResourceDictionary>
             <Style x:Key="InvalidStyle" TargetType="Entry">
@@ -13,27 +14,34 @@
     </ContentPage.Resources>
     <ContentPage.Content>
         <ScrollView>
-            <StackLayout VerticalOptions="CenterAndExpand" Margin="15" 
+            <StackLayout VerticalOptions="CenterAndExpand" Margin="50, 0" 
                          x:DataType="viewmodels:UserRegisterViewModel">
 
-                <Label Text="Nome:" FontSize="Large" Margin="3, 0" />
+                <Label Text="Informe os dados" FontSize="30" 
+                       HorizontalOptions="CenterAndExpand"
+                       Margin="0, 0, 0, 50" 
+                       TextColor="#4a1e9e"
+                       FontFamily="Poppins-Bold.ttf#Poppins-Bold"
+                       />
+
+                <Label Text="Nome:*" FontSize="Medium" Margin="3, 0" 
+                       TextColor="#8a2be2" FontFamily="Poppins-Bold.ttf#Poppins-Bold" />
                 <Entry Placeholder="Digite seu nome" Text="{Binding FirstName}" 
                        ClearButtonVisibility="WhileEditing" Keyboard="Text" 
-                       Margin="0, 0, 0, 25">
-                    <Entry.Behaviors>
-                        <xct:TextValidationBehavior MinimumLength="3" InvalidStyle="{StaticResource InvalidStyle}"/>
-                    </Entry.Behaviors>
+                       Margin="0, 0, 0, 25" AutomationId="FirstNameBox">
                 </Entry>
 
-                <Label Text="Sobrenome:" FontSize="Large" Margin="3, 0"/>
+                <Label Text="Sobrenome:" FontSize="Medium" Margin="3, 0" 
+                       TextColor="#8a2be2" FontFamily="Poppins-Bold.ttf#Poppins-Bold"/>
                 <Entry Placeholder="Digite seu sobrenome" Text="{Binding Surname}" 
                        ClearButtonVisibility="WhileEditing" Keyboard="Text" 
-                       Margin="0, 0, 0, 25"/>
+                       Margin="0, 0, 0, 25" AutomationId="SurnameBox"/>
 
-                <Label Text="Idade:" FontSize="Large" Margin="3, 0"/>
+                <Label Text="Idade:*" FontSize="Medium" Margin="3, 0"
+                       TextColor="#8a2be2" FontFamily="Poppins-Bold.ttf#Poppins-Bold"/>
                 <Entry Placeholder="Digite sua idade" Text="{Binding Age}"
                        ClearButtonVisibility="WhileEditing" Keyboard="Numeric" 
-                       Margin="0, 0, 0, 25">
+                       Margin="0, 0, 0, 25" AutomationId="AgeBox">
                     <Entry.Behaviors>
                         <xct:MultiValidationBehavior InvalidStyle="{StaticResource InvalidStyle}">
                             <xct:NumericValidationBehavior xct:MultiValidationBehavior.Error="NaN" />
@@ -47,13 +55,17 @@
                     </Entry.Behaviors>
                 </Entry>
 
-                <Grid Margin="0, 50, 0, 0">
+                <Grid Margin="0, 50, 0, 10">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <Button Text="Confirmar" BackgroundColor="DarkGreen" Margin="5,0,0,0" HeightRequest="60"
-                            Command="{Binding SaveUser}" FontSize="Medium"/>
+                    <Button Text="Confirmar" 
+                            BackgroundColor="#4a1e9e" 
+                            Margin="5,0,0,0" 
+                            HeightRequest="60" 
+                            TextColor="GhostWhite"
+                            Command="{Binding SaveUser}" FontSize="Medium" AutomationId="ConfirmButton"/>
                 </Grid>
             </StackLayout>
         </ScrollView>
