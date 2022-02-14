@@ -3,12 +3,8 @@ using Moq;
 using AwesomeApp.Services;
 using AwesomeApp.Models;
 using AwesomeApp.ViewModels;
-using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
-using System.Text.Json;
 
 namespace MobileAppTests
 {
@@ -40,6 +36,46 @@ namespace MobileAppTests
                     ((List<User>)users).Count,
                     vm.AllUsers.Count
                 );
+        }
+    
+        [Fact]
+        public void SelectAnUserShouldRaisePropertyChange()
+        {
+            // Arrange
+            bool invoked = false;
+            var userVm = new UserListViewModel(new Mock<IUserService>().Object);
+
+            userVm.PropertyChanged += (sender, e) =>
+            {
+                if (e.PropertyName.Equals("SelectedUser"))
+                    invoked = true;
+            };
+
+            // Act
+            userVm.SelectedUser = new User();
+
+            // Assert
+            Assert.True(invoked);
+        }
+
+        [Fact]
+        public void SelectedUserShouldRaisePropertyChange()
+        {
+            // Arrange
+            bool invoked = false;
+            var userVm = new UserListViewModel(new Mock<IUserService>().Object);
+
+            userVm.PropertyChanged += (sender, e) =>
+            {
+                if (e.PropertyName.Equals("IsSelected"))
+                    invoked = true;
+            };
+
+            // Act
+            userVm.IsSelected = true;
+
+            // Assert
+            Assert.True(invoked);
         }
     }
 }
