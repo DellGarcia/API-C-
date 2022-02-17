@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "d2872e9a-6377-416c-ad0c-8dfe430e42a8": {
+      "ProjectGuid": "d2872e9a-6377-416c-ad0c-8dfe430e42a8",
+      "DisplayName": "ETL.Project",
+      "ColorIndex": 0
+    }
+  },
+  "NextColorIndex": 1
+}
