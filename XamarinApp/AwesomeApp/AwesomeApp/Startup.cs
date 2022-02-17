@@ -17,7 +17,7 @@ namespace XamWebApiClient
             //add services
             services.AddHttpClient<IUserService, UserService>(c =>
             {
-                c.BaseAddress = new Uri("http://9041-143-0-57-126.ngrok.io/api/");
+                c.BaseAddress = new Uri("http://fff9-143-0-57-126.ngrok.io/api/");
                 c.DefaultRequestHeaders.Add("Accept", "application/json");
             })
             .ConfigurePrimaryHttpMessageHandler(_ => new HttpClientHandler
