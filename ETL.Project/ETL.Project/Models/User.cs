@@ -16,6 +16,8 @@ namespace ETL.Project.Models
 
         public DateTime Birthday { get; set; }
 
-        public int AddressId { get; set; }
+        public ICollection<Address> Addresses { get; set; }
+
+        public ICollection<Library> Libraries { get; set; }
     }
 }

@@ -8,9 +8,8 @@ namespace ETL.Project.Mappings
     {
         public void Configure(EntityTypeBuilder<Game> builder)
         {
-            builder.HasOne<Genre>()
-                .WithMany()
-                .HasForeignKey(p => p.GenreId)
+            builder.HasOne(game => game.Genre)
+                .WithMany(genre => genre.Games)
                 .IsRequired();
         }
     }

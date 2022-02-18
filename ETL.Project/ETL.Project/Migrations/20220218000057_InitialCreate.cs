@@ -4,32 +4,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ETL.Project.Migrations
 {
-    public partial class initDatabase : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterDatabase()
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "endereco",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Endereco = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Complemento = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Cidade = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Estado = table.Column<string>(type: "longtext", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_endereco", x => x.Id);
-                })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
@@ -57,18 +36,11 @@ namespace ETL.Project.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Birthday = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    AddressId = table.Column<int>(type: "int", nullable: false)
+                    Birthday = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_usuario", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_usuario_endereco_AddressId",
-                        column: x => x.AddressId,
-                        principalTable: "endereco",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -92,6 +64,34 @@ namespace ETL.Project.Migrations
                         principalTable: "genero",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "endereco",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Endereco = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Complemento = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Cidade = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Estado = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    UserId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_endereco", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_endereco_usuario_UserId",
+                        column: x => x.UserId,
+                        principalTable: "usuario",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -134,20 +134,23 @@ namespace ETL.Project.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_endereco_UserId",
+                table: "endereco",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_jogo_GenreId",
                 table: "jogo",
                 column: "GenreId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_usuario_AddressId",
-                table: "usuario",
-                column: "AddressId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
                 name: "biblioteca");
+
+            migrationBuilder.DropTable(
+                name: "endereco");
 
             migrationBuilder.DropTable(
                 name: "jogo");
@@ -157,9 +160,6 @@ namespace ETL.Project.Migrations
 
             migrationBuilder.DropTable(
                 name: "genero");
-
-            migrationBuilder.DropTable(
-                name: "endereco");
         }
     }
 }

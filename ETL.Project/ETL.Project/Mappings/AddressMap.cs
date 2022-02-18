@@ -9,7 +9,7 @@ namespace ETL.Project.Mappings
     {
         public void Configure(EntityTypeBuilder<Address> builder)
         {
-                
+            
         }
     }
 }

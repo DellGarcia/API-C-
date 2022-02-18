@@ -1,9 +1,8 @@
-﻿using System;
-using ETL.Project.Database;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Configuration;
+﻿using ETL.Project.Database;
 using Microsoft.EntityFrameworkCore;
 using ETL.Project.Utils;
+ 
+
 namespace ETL.Project
 {
     internal class Program
@@ -13,11 +12,7 @@ namespace ETL.Project
             var context = new ClientDBContext();
             context.Database.Migrate();
 
-            AddressGenerator.Generate(context);
-            UserGenerator.Generate(context);
-            GenreGenerator.Generate(context);
-            GameGenerator.Generate(context);
-            LibraryGenerator.Generate(context);
+            DataGenerator.Generate(context);
         }
     }
 }

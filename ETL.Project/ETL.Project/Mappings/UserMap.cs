@@ -13,10 +13,9 @@ namespace ETL.Project.Mappings
                 .HasMaxLength(150)
                 .IsRequired();
 
-            builder.HasOne<Address>()
-                .WithMany()
-                .HasForeignKey(p => p.AddressId)
-                .IsRequired();
+            builder
+                .HasMany(u => u.Addresses)
+                .WithOne(a => a.User);
         }
     }
 }
