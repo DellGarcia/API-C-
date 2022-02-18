@@ -1,17 +1,22 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace ETL.Project.Models
+namespace ETL.Project.Analysis.Models
 {
-    [Table("biblioteca")]
+    [Table("library")]
     public class Library
     {
         public int Id { get; set; }
 
+        public string Name { get; set; }
+
+        public string Genre { get; set; }
+
+        public int Year { get; set; }
+
         public DateTime AquisitionDate { get; set; }
 
         public User User { get; set; }
-
-        public Game Game { get; set; }
     }
 }
+

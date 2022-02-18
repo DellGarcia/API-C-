@@ -16,6 +16,8 @@ namespace ETL.Project.Models
 
         public int Year { get; set; }
 
-        public int GenreId { get; set; }
+        public Genre Genre { get; set; }
+
+        public ICollection<Library> Libraries { get; set; }
     }
 }

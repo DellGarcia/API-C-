@@ -8,14 +8,12 @@ namespace ETL.Project.Mappings
     {
         public void Configure(EntityTypeBuilder<Library> builder)
         {
-            builder.HasOne<User>()
-                .WithMany()
-                .HasForeignKey(p => p.UserId)
+            builder.HasOne(library => library.User)
+                .WithMany(game => game.Libraries)
                 .IsRequired();
 
-            builder.HasOne<Game>()
-                .WithMany()
-                .HasForeignKey(p => p.GameId)
+            builder.HasOne(library => library.Game)
+                .WithMany(game => game.Libraries)
                 .IsRequired();
         }
     }

@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.Generic;
 
-namespace ETL.Project.Models
+namespace ETL.Project.Analysis.Models
 {
-    [Table("usuario")]
+    [Table("user")]
     public class User
     {
         public int Id { get; set; }
@@ -16,7 +13,13 @@ namespace ETL.Project.Models
 
         public DateTime Birthday { get; set; }
 
-        public ICollection<Address> Addresses { get; set; }
+        public string Address { get; set; }
+
+        public string Complement { get; set; }
+
+        public string City { get; set; }
+
+        public string State { get; set; }
 
         public ICollection<Library> Libraries { get; set; }
     }

@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ETL.Project.Migrations
 {
     [DbContext(typeof(ClientDBContext))]
-    [Migration("20220217102324_initDatabase")]
-    partial class initDatabase
+    [Migration("20220218000057_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -37,7 +37,12 @@ namespace ETL.Project.Migrations
                     b.Property<string>("Estado")
                         .HasColumnType("longtext");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("endereco");
                 });
@@ -111,9 +116,6 @@ namespace ETL.Project.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("AddressId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("Birthday")
                         .HasColumnType("datetime(6)");
 
@@ -124,42 +126,63 @@ namespace ETL.Project.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AddressId");
-
                     b.ToTable("usuario");
+                });
+
+            modelBuilder.Entity("ETL.Project.Models.Address", b =>
+                {
+                    b.HasOne("ETL.Project.Models.User", "User")
+                        .WithMany("Addresses")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ETL.Project.Models.Game", b =>
                 {
-                    b.HasOne("ETL.Project.Models.Genre", null)
-                        .WithMany()
+                    b.HasOne("ETL.Project.Models.Genre", "Genre")
+                        .WithMany("Games")
                         .HasForeignKey("GenreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Genre");
                 });
 
             modelBuilder.Entity("ETL.Project.Models.Library", b =>
                 {
-                    b.HasOne("ETL.Project.Models.Game", null)
-                        .WithMany()
+                    b.HasOne("ETL.Project.Models.Game", "Game")
+                        .WithMany("Libraries")
                         .HasForeignKey("GameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ETL.Project.Models.User", null)
-                        .WithMany()
+                    b.HasOne("ETL.Project.Models.User", "User")
+                        .WithMany("Libraries")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Game");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ETL.Project.Models.Game", b =>
+                {
+                    b.Navigation("Libraries");
+                });
+
+            modelBuilder.Entity("ETL.Project.Models.Genre", b =>
+                {
+                    b.Navigation("Games");
                 });
 
             modelBuilder.Entity("ETL.Project.Models.User", b =>
                 {
-                    b.HasOne("ETL.Project.Models.Address", null)
-                        .WithMany()
-                        .HasForeignKey("AddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Addresses");
+
+                    b.Navigation("Libraries");
                 });
 #pragma warning restore 612, 618
         }

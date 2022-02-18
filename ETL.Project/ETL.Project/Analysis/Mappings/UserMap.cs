@@ -1,9 +1,13 @@
-﻿using System;
+﻿using ETL.Project.Analysis.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using ETL.Project.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace ETL.Project.Mappings
+namespace ETL.Project.Analysis.Mappings
 {
     public class UserMap : IEntityTypeConfiguration<User>
     {
@@ -14,8 +18,8 @@ namespace ETL.Project.Mappings
                 .IsRequired();
 
             builder
-                .HasMany(u => u.Addresses)
-                .WithOne(a => a.User);
+                .HasMany(user => user.Libraries)
+                .WithOne(library => library.User);
         }
     }
 }

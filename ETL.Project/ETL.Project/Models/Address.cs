@@ -19,5 +19,7 @@ namespace ETL.Project.Models
         public string Cidade { get; set; }
 
         public string Estado { get; set; }
+
+        public User User { get; set; }
     }
 }
