@@ -1,19 +1,14 @@
 ﻿using ETL.Project.Database;
 using ETL.Project.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ETL.Project.Utils
 {
     public class DataGenerator
     {
-        public static void Generate(ClientDBContext context)
+        public static void GenerateAll(ClientDBContext context, int amount)
         {
-
-            for (int i = 1; i <= 100; i++)
+            for (int i = 1; i <= amount; i++)
             {
                 Genre genre = new()
                 {
@@ -50,6 +45,21 @@ namespace ETL.Project.Utils
                 };
                 context.Library.Add(library);
                 context.Address.Add(address);
+            }
+            context.SaveChanges();
+        }
+    
+        public static void GenerateUsers(ClientDBContext context, int amount)
+        {
+            for(int i = 1; i <= amount; i++)
+            {
+                User user = new()
+                {
+                    Name = $"Sigle User {i}",
+                    Birthday = DateTime.Now
+                };
+
+                context.User.Add(user);
             }
             context.SaveChanges();
         }

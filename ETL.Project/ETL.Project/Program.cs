@@ -5,89 +5,57 @@ using System.Text.Json;
 using System;
 using ETL.Project.Analysis.Models;
 using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Configuration;
 
 namespace ETL.Project
 {
-    internal class Program
+    public class Program
     {
+        private readonly static IHost host = CreateDefaultBuilder().Build();
+        private readonly static IServiceScope serviceScope = host.Services.CreateScope();
+        public readonly static IServiceProvider Provider = serviceScope.ServiceProvider;
+
         public static void Main()
         {
-            var context = new ClientDBContext();
-            context.Database.Migrate();
+            var mainInstance = Provider.GetRequiredService<Main>();
+            mainInstance.Start();
 
-            //DataGenerator.Generate(context);
-
-            //ExtractAndPopulateUsers(context);
-            ExtractAndPopulate(context);
+            host.Run();
         }
 
-        public static async void ExtractAndPopulateUsers(ClientDBContext context)
+
+        static IHostBuilder CreateDefaultBuilder()
         {
-            var responseAddress = await context.Address
-                .Include(address => address.User)
-                .ToListAsync();
-
-            var analysisContext = new AnalystDBContext();
-            analysisContext.Database.Migrate();
-
-            // var response2 = await context.User.ToListAsync();
-
-            User user;
-            foreach (var item in responseAddress)
-            {
-                user = new()
+            var tempHost = Host.CreateDefaultBuilder()
+                .ConfigureAppConfiguration(app =>
                 {
-                    Name = item.User.Name,
-                    Birthday = item.User.Birthday,
-                    Address = item.Endereco,
-                    City = item.Cidade,
-                    State = item.Estado,
-                    Complement = item.Complemento
-                };
-                analysisContext.User.Add(user);
-            }
-            analysisContext.SaveChanges();
+                    app.AddJsonFile("appsettings.json");
+                    app.AddJsonFile("appsettings.Development.json");
+                });
+
+            //var config = Provider.GetService<IConfiguration>();
+
+            tempHost.ConfigureServices(services =>
+                {
+                    services.AddSingleton<Main>();
+
+                    string clientString = "server=localhost;port=3306;database=clientETL-database;uid=root;password=";
+
+                    services.AddDbContext<ClientDBContext>(options =>
+                        options.UseMySql(clientString, ServerVersion.AutoDetect(clientString)));
+
+                    string analystString = "server=localhost;port=3306;database=analystETL-database;uid=root;password=";
+
+                    services.AddDbContext<AnalystDBContext>(options =>
+                        options.UseMySql(analystString, ServerVersion.AutoDetect(analystString)));
+                });
+
+
+            return tempHost;
         }
 
-        public static async void ExtractAndPopulate(ClientDBContext context)
-        {
-            var response = await context.Library
-                .Include(library => library.Game)
-                .Include(library => library.User)
-                .ThenInclude(user => user.Addresses)
-                .ToListAsync();
-
-            //var response = await context.Library.ToListAsync();
-
-            var analysisContext = new AnalystDBContext();
-            analysisContext.Database.Migrate();
-
-            Library library;
-            foreach (var item in response)
-            {
-                //Models.Address address = new List<Models.Address>(item.User.Addresses)[0];
-
-                //User user = new()
-                //{
-                //    Name = item.User.Name,
-                //    Birthday = item.User.Birthday,
-                //    Address = address.Endereco,
-                //    City = address.Cidade,
-                //    State = address.Estado,
-                //    Complement = address.Complemento
-                //};
-
-                //library = new()
-                //{
-                //    User = user,
-                //    Name = item.Game.Name,
-                //    Genre = item.Game.Genre.Name,
-                //    Year = item.Game.Year,
-                //    AquisitionDate = item.AquisitionDate
-                //};
-                //analysisContext.Library.Add(library);
-            }
-            analysisContext.SaveChanges();
-        }
     }
 }

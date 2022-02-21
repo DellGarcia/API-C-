@@ -2,6 +2,7 @@
 using ETL.Project.Mappings;
 using ETL.Project.Models;
 using System;
+using Microsoft.Extensions.Configuration;
 
 namespace ETL.Project.Database
 {
@@ -13,12 +14,11 @@ namespace ETL.Project.Database
         public virtual DbSet<Game> Game { get; set; }
         public virtual DbSet<Library> Library { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            string connectionString = "server=localhost;port=3306;database=clientETL-database;uid=root;password=";
+        public ClientDBContext(DbContextOptions<ClientDBContext> options) : base(options)
+        {}
 
-            optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
-        }
+        public ClientDBContext()
+        {}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
