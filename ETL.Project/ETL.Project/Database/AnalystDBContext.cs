@@ -2,6 +2,7 @@
 using ETL.Project.Analysis.Mappings;
 using ETL.Project.Analysis.Models;
 using System;
+using Microsoft.Extensions.Configuration;
 
 namespace ETL.Project.Database
 {
@@ -10,12 +11,11 @@ namespace ETL.Project.Database
         public virtual DbSet<User> User { get; set; }
         public virtual DbSet<Library> Library { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            string connectionString = "server=localhost;port=3306;database=ETL-database;uid=root;password=";
+        public AnalystDBContext(DbContextOptions<AnalystDBContext> options) : base(options)
+        {}
 
-            optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
-        }
+        public AnalystDBContext()
+        {}
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
